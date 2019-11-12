@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 //https://pages.mtu.edu/~suits/notefreqs.html
 
 public class MelodyGenerator : MonoBehaviour
@@ -14,7 +13,7 @@ public class MelodyGenerator : MonoBehaviour
     float frequency = 261.63f;
 
     //Base Tone
-    public AudioClip CreateBaseToneAudioClip()
+    private AudioClip CreateBaseToneAudioClip()
     {
         var audioClip = AudioClip.Create("tone", sampleLength, 1, sampleAmplitude, true);
 
@@ -30,7 +29,7 @@ public class MelodyGenerator : MonoBehaviour
         return audioClip;
     }
 
-    public AudioClip CreateToneAudioClip()
+    private AudioClip CreateToneAudioClip()
     {
         //A4
         var clip = AudioClip.Create("high", sampleLength, 5, sampleAmplitude - 53.46, true);
@@ -53,5 +52,4 @@ public class MelodyGenerator : MonoBehaviour
 
 
 
-   
 }
