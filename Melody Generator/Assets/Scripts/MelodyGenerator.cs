@@ -1,55 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//https://pages.mtu.edu/~suits/notefreqs.html
 
-public class MelodyGenerator : MonoBehaviour
+public class MelodyGeneratortest : MonoBehaviour
 {
-    int sampleDuration = 5;
-    float sampleAmplitude = 131.87f;
-    int sampleLength = sampleAmplitude * sampleDuration;
-    float maxValue = 1f / 4f;
-    //C4
-    float frequency = 261.63f;
+    // Start is called before the first frame update
 
-    //Base Tone
-    private AudioClip CreateBaseToneAudioClip()
+    AudioSource Melody;
+    bool m_Play;
+    bool m_ToggleChange;
+    float frequency = 16.35f;
+    float wavelength = 2109.89f;
+    int sampleLength = 3;
+
+    public void Start()
     {
-        var audioClip = AudioClip.Create("tone", sampleLength, 1, sampleAmplitude, true);
-
-        float[] samples = new float[sampleLength];
-        for (var i = 0; i < sampleLength; i++)
-        {
-            float s = Mathf.Sin(4.0f * Mathf.PI * frequency * ((float) i / (float)sampleAmplitude));
-            float v = s * maxValue;
-            samples[i] = v;
-        }
-
-        audioClip.SetData(samples, 0);
-        return audioClip;
+        Melody = GetComponent<AudioSource>();
+        m_Play = true;
+        Debug.Log("Started");
     }
 
-    private AudioClip CreateToneAudioClip()
+    // Update is called once per frame
+    public void Update()
     {
-        //A4
-        var clip = AudioClip.Create("high", sampleLength, 5, sampleAmplitude - 53.46, true);
-
-
-        float[] highSamples = new float[sampleLength];
-        for (var i = 0; i < sampleLength; i++)
+        if (m_Play == true && m_ToggleChange == true)
         {
-            float j = Mathf.Sin(2.0f * Mathf.PI * (frequency = 392.00) * ((float)i / (float)sampleAmplitude));
-            float k = j * maxValue;
-            highSamples[i] = k;
+            Melody.Play();
+            m_ToggleChange = false;
         }
 
-        clip.SetData(highSamples, 0);
-        return clip;
+        if (m_Play == false && m_ToggleChange == true)
+        {
+            Melody.Stop();
+            m_ToggleChange = false;
+            Debug.Log("Pause");
+        }
     }
-
-    //button to play the audio source
-    var clicked = CreateBaseToneAudioClip() + CreateToneAudioClip();
-
-
-
 }
