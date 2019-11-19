@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MelodyGeneratortest : MonoBehaviour
+public class MelodyGenerator : MonoBehaviour
 {
     // Start is called before the first frame update
 
@@ -133,10 +133,13 @@ public class MelodyGeneratortest : MonoBehaviour
             ["A#8"] = 1458.62f,
         };
 
-        //
+        //make the base for the melody
+        //add two or more waves together
+
+
     }
 
-    // Update is called once per frame
+    // Playmelody plays the melody
     public void PlayMelody()
     {
         if (m_Play == true && m_ToggleChange == true)
