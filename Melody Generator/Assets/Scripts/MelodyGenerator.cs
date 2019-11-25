@@ -1,22 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class MelodyGenerator : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    AudioSource Melody;
-    bool m_Play;
-    bool m_ToggleChange;
-    
-    int sampleLength = 3;
+    private AudioSource Melody;
+    private AudioClip outAudioClip;
 
-    public void Start()
+    private int sampleLength;
+    
+
+    void Start()
     {
         Melody = GetComponent<AudioSource>();
-        m_Play = true;
-        Debug.Log("Started");
+        
+        PlayOutAudio();
+        MakeMelody();
+        //SaveWavUtil.Save("C://Users//Ceri Thomas//Documents//Tinkering-Audio-Team-5//Melody Generator//soundFile.wav", outAudioClip);
+
     }
 
 
@@ -135,24 +144,44 @@ public class MelodyGenerator : MonoBehaviour
 
         //make the base for the melody
         //add two or more waves together
-
+        var random = new System.Random();
+        for (int i = 0; i < 109; i++)
+        {
+            outAudioClip = CreateTone(random.Next(notesFrequency.Count));
+            
+        }
 
     }
 
-    // Playmelody plays the melody
-    public void PlayMelody()
+    private AudioClip CreateTone(int frequency)
     {
-        if (m_Play == true && m_ToggleChange == true)
-        {
-            Melody.Play();
-            m_ToggleChange = false;
-        }
+        int sampleDurationSecs = 5;
+        int sampleRate = 44100;
+        float maxValue = 1f / 4f;
+        int sampleLength = sampleRate * sampleDurationSecs;
+        var audioClip = AudioClip.Create("tone", sampleLength, 1, sampleRate, false);
 
-        if (m_Play == false && m_ToggleChange == true)
+        float[] samples = new float[sampleLength];
+        for (var i = 0; i < sampleLength; i++)
         {
-            Melody.Stop();
-            m_ToggleChange = false;
-            Debug.Log("Pause");
+            float s = Mathf.Sin(2.0f * Mathf.PI * frequency * ((float)i / (float)sampleRate));
+            float v = s * maxValue;
+            samples[i] = v;
         }
+        audioClip.SetData(samples, 0);
+        return audioClip;
     }
+
+    public void PlayOutAudio()
+    {
+        Melody.PlayOneShot(outAudioClip);
+    }
+
+    public void StopAudio()
+    {
+        Melody.Stop();
+    }
+
+
+
 }
