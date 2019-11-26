@@ -1,4 +1,10 @@
-﻿using System.Collections;
+﻿/*
+Author: Callum Quinn
+Link to Repo: https://github.com/Quinny18/Tinkering-Audio-Team-5
+License: MIT, reasoning for this can be found in the repo under the READ.md
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -54,9 +60,9 @@ public class AudioTinker : MonoBehaviour {
     }
 
     //This outputs the sound
-    public void PlayOutAudio(AudioClip sound)
+    public void PlayOutAudio(AudioClip Sound)
     {
-        audioSource.PlayOneShot(sound);
+        audioSource.PlayOneShot(Sound);
 
     }
 
