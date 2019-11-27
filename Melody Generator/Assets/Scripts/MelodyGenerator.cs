@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using Random = UnityEngine.Random;
 
 public class MelodyGenerator : MonoBehaviour
 {
@@ -15,15 +11,25 @@ public class MelodyGenerator : MonoBehaviour
     private AudioSource Melody;
     private AudioClip outAudioClip;
 
-    private int sampleLength;
+    private double frequency;
+
+    private int sampleLength = 10;
+
+    private double baseFrequency;
+    private double mainFrequency;
+
+    private double add;
+
+    private float volume = 0.2f;
+
+ 
     
 
     void Start()
     {
         Melody = GetComponent<AudioSource>();
         
-        PlayOutAudio();
-        MakeMelody();
+        playAudio();
         //SaveWavUtil.Save("C://Users//Ceri Thomas//Documents//Tinkering-Audio-Team-5//Melody Generator//soundFile.wav", outAudioClip);
 
     }
@@ -144,42 +150,68 @@ public class MelodyGenerator : MonoBehaviour
 
         //make the base for the melody
         //add two or more waves together
-        var random = new System.Random();
-        for (int i = 0; i < 109; i++)
+        // var random = new System.Random();
+        // for (int i = 0; i < 109; i++)
+        // {
+        //    outAudioClip = CreateTone(random.Next(notesFrequency.Count));
+
+        // }
+
+        var counter = 0;
+        while (counter < sampleLength)
         {
-            outAudioClip = CreateTone(random.Next(notesFrequency.Count));
+            frequency = 261.63f;
+            baseFrequency = Random.Range(0, 109);
+            mainFrequency = Random.Range(0, 109);
+
+            counter++;
+
+            if (baseFrequency == mainFrequency)
+            {
+                baseFrequency = Random.Range(0, 109);
+                mainFrequency = Random.Range(0, 109);
+            }
+
             
         }
 
+        playAudio();
+        Melody.clip = outAudioClip;
+        Melody.Play();
+        saveAsWav();
+
+
+
     }
 
-    private AudioClip CreateTone(int frequency)
+    public void OnAudioFilterRead(float[] data, int channels)
     {
-        int sampleDurationSecs = 5;
-        int sampleRate = 44100;
-        float maxValue = 1f / 4f;
-        int sampleLength = sampleRate * sampleDurationSecs;
-        var audioClip = AudioClip.Create("tone", sampleLength, 1, sampleRate, false);
+        frequency = baseFrequency * 2.0 * Mathf.PI / mainFrequency;
 
-        float[] samples = new float[sampleLength];
-        for (var i = 0; i < sampleLength; i++)
+        for (int i = 0; i < data.Length; i = i + channels)
         {
-            float s = Mathf.Sin(2.0f * Mathf.PI * frequency * ((float)i / (float)sampleRate));
-            float v = s * maxValue;
-            samples[i] = v;
+            add += frequency;
+            data[i] = (float)(volume * Mathf.Sin((float)add));
+
+            if (channels == 2)
+            {
+                data[i + 1] = data[i];
+            }
+            else if (add > (Mathf.PI * 2))
+            {
+                add = 0.0;
+            }
         }
-        audioClip.SetData(samples, 0);
-        return audioClip;
     }
 
-    public void PlayOutAudio()
+    public void playAudio()
     {
-        Melody.PlayOneShot(outAudioClip);
+        outAudioClip = AudioClip.Create("tone", (int)(frequency * sampleLength), 2, (int)frequency, false);
     }
 
-    public void StopAudio()
+    public void saveAsWav()
     {
-        Melody.Stop();
+        SaveWavUtil.Save("RandomMelody", outAudioClip);
     }
 
 
