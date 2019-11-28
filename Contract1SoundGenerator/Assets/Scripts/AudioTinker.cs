@@ -15,11 +15,19 @@ public class AudioTinker : MonoBehaviour
     public int Frequency1;
     public int Frequency2;
     public int Frequency3;
-    private Slider frequencySlider;
 
+    public int Delay1;
+    public int Delay2;
+    public int Delay3;
+
+    //Frequency Sliders
     public Slider Slider1;
     public Slider Slider2;
     public Slider Slider3;
+    //Delay Sliders
+    public Slider Slider4;
+    public Slider Slider5;
+    public Slider Slider6;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +41,10 @@ public class AudioTinker : MonoBehaviour
         Frequency1 = (int)Slider1.value;
         Frequency2 = (int)Slider2.value;
         Frequency3 = (int)Slider3.value;
+
+        Delay1 = (int)Slider4.value;
+        Delay2 = (int)Slider5.value;
+        Delay3 = (int)Slider6.value;
     }
 
     public void StopAudio()
@@ -118,7 +130,7 @@ public class AudioTinker : MonoBehaviour
     IEnumerator DelaySound()
     {
         int[] Frequencies = new int[3] {Frequency1, Frequency2, Frequency3};
-        int[] Seconds = new int[3] {1, 1, 1};
+        int[] Seconds = new int[3] {Delay1, Delay2, Delay3};
         float[] Modifier = new float[3] { 0.25f, 0.15f, 0.25f };
         outAudioClip = CreatePickupSound(Frequencies, Seconds, Modifier);
         PlayOutAudio(outAudioClip);
