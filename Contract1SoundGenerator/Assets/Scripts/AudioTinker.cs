@@ -12,6 +12,7 @@ public class AudioTinker : MonoBehaviour
     private AudioSource audioSource;
     private AudioClip outAudioClip;
     private SFB_AudioClipArrayCombiner combiner;
+
     public int Frequency1;
     public int Frequency2;
     public int Frequency3;
@@ -20,14 +21,22 @@ public class AudioTinker : MonoBehaviour
     public int Delay2;
     public int Delay3;
 
+    public float Modifier1;
+    public float Modifier2;
+    public float Modifier3;
+
     //Frequency Sliders
     public Slider Slider1;
     public Slider Slider2;
     public Slider Slider3;
     //Delay Sliders
-    public Slider Slider4;
-    public Slider Slider5;
-    public Slider Slider6;
+    public Slider DelaySlider1;
+    public Slider DelaySlider2;
+    public Slider DelaySlider3;
+    //Modifier Sliders
+    public Slider ModifierSlider1;
+    public Slider ModifierSlider2;
+    public Slider ModifierSlider3;
 
     // Start is called before the first frame update
     void Start()
@@ -38,13 +47,19 @@ public class AudioTinker : MonoBehaviour
 
     void Update()
     {
+        //Assigning the value of the Sliders to the variables
         Frequency1 = (int)Slider1.value;
         Frequency2 = (int)Slider2.value;
         Frequency3 = (int)Slider3.value;
 
-        Delay1 = (int)Slider4.value;
-        Delay2 = (int)Slider5.value;
-        Delay3 = (int)Slider6.value;
+        Delay1 = (int)DelaySlider1.value;
+        Delay2 = (int)DelaySlider2.value;
+        Delay3 = (int)DelaySlider3.value;
+
+        Modifier1 = ModifierSlider1.value;
+        Modifier2 = ModifierSlider2.value;
+        Modifier3 = ModifierSlider3.value;
+
     }
 
     public void StopAudio()
@@ -99,7 +114,6 @@ public class AudioTinker : MonoBehaviour
         audioClip.SetData(samples, 0);
         return audioClip;
     }
-    
 
     //This outputs the sound
     public void PlayOutAudio(AudioClip sound)
@@ -126,38 +140,15 @@ public class AudioTinker : MonoBehaviour
         Clips.Add(audioClip);
     }
     
-
     IEnumerator DelaySound()
     {
         int[] Frequencies = new int[3] {Frequency1, Frequency2, Frequency3};
         int[] Seconds = new int[3] {Delay1, Delay2, Delay3};
-        float[] Modifier = new float[3] { 0.25f, 0.15f, 0.25f };
+        float[] Modifier = new float[3] { Modifier1, Modifier2, Modifier3 };
         outAudioClip = CreatePickupSound(Frequencies, Seconds, Modifier);
         PlayOutAudio(outAudioClip);
         yield return new WaitForSeconds(0);
     }
-
-   
-
-    /*IEnumerator DelaySound()
-    {
-        AudioClip audioClip = CreateTone(1975, 1, 0.25f);
-        PlayOutAudio(audioClip);
-        combiner.audioLayers[0].clip[0] = audioClip;
-        yield return new WaitForSeconds(0.15f);
-
-        audioClip = CreateTone(2637, 1, 0.25f);
-        PlayOutAudio(audioClip);
-        combiner.audioLayers[1].clip[0] = audioClip;
-
-        yield return new WaitForSeconds(0.25f);
-        StopAudio();
-
-        audioClip.
-    }
-    */
-    //1975, 1, 0.25f
-    //2637, 1, 0.25f
 }
 
 
