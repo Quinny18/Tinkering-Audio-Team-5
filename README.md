@@ -2,7 +2,8 @@
 
 Justification of License Choice
 
-The MIT license is open source allowing for the re-use of our code, which seems fair due to the fact that it is being used in an educational setting. However, it does also require that we are credited if our code is used. 
+The GPL 3.0 license is open source allowing for people to do almost anythingthey want with the project, which seems fair due to the fact that it is being used in an educational setting, but it does however require that we are still credited for our work and means that it cannot be used for closed source versions.
+
 
 Contract 1 - Callum Quinn
 
