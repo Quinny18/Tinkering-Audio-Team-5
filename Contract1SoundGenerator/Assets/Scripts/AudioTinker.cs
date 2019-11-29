@@ -1,4 +1,20 @@
-﻿using System.Collections;
+﻿/*
+ * Author of this Script: Callum Quinn
+ * Contributions by: Callum Quinn and Cole Gilbert
+ * Link to GitHub: https://github.com/Quinny18/Tinkering-Audio-Team-5
+ * License used: MIT 
+ * 
+ * This script includes all the necessary code for the creation of a tool
+ * that generates different noises that could be used as sound effects in a 
+ * game. The user is able to specific the Frequency of each audio clip, the 
+ * delay between each clip playing and a modifier which changes the length
+ * of the clips. Those sound clips are generated using the parameters that
+ * the user inputs via the UI and then can be saved into a wav. file anywhere
+ * on the computer.
+ */
+
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,14 +25,15 @@ using UnityEditor;
 public class AudioTinker : MonoBehaviour
 {
     public int Sound1;
-    private AudioSource audioSource;
-    private AudioClip outAudioClip;
-    private SFB_AudioClipArrayCombiner combiner;
-
+    private AudioSource @AudioSource;
+    private AudioClip OutAudioClip;
+    
+    
+    //Initialising variables for sound generation
     public int Frequency1;
     public int Frequency2;
     public int Frequency3;
-
+    //The delay in between the clips playing
     public int Delay1;
     public int Delay2;
     public int Delay3;
@@ -26,9 +43,9 @@ public class AudioTinker : MonoBehaviour
     public float Modifier3;
 
     //Frequency Sliders
-    public Slider Slider1;
-    public Slider Slider2;
-    public Slider Slider3;
+    public Slider FrequencySlider1;
+    public Slider FrequencySlider2;
+    public Slider FrequencySlider3;
     //Delay Sliders
     public Slider DelaySlider1;
     public Slider DelaySlider2;
@@ -41,16 +58,15 @@ public class AudioTinker : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-        combiner = GetComponent<SFB_AudioClipArrayCombiner>();
+        @AudioSource = GetComponent<AudioSource>();
     }
 
     void Update()
     {
         //Assigning the value of the Sliders to the variables
-        Frequency1 = (int)Slider1.value;
-        Frequency2 = (int)Slider2.value;
-        Frequency3 = (int)Slider3.value;
+        Frequency1 = (int)FrequencySlider1.value;
+        Frequency2 = (int)FrequencySlider2.value;
+        Frequency3 = (int)FrequencySlider3.value;
 
         Delay1 = (int)DelaySlider1.value;
         Delay2 = (int)DelaySlider2.value;
@@ -61,64 +77,64 @@ public class AudioTinker : MonoBehaviour
         Modifier3 = ModifierSlider3.value;
 
     }
-
+    //This stops all the current audio
     public void StopAudio()
     {
-        audioSource.Stop();
+       @AudioSource.Stop();
     }
-
-    private AudioClip CreatePickupSound(int[] frequency, int[] seconds, float[] sampleModifier)
+    //This function creates the sound clips
+    private AudioClip CreatePickupSound(int[] Frequency, int[] Seconds, float[] SampleModifier)
     {
         
         //Sample rate is constant
-        int sampleRate = 44100;
+        int SampleRate = 44100;
 
-        float maxValue = 1f / 4f;
+        float MaxValue = 1f / 4f;
 
         //SampleLength is the total number of samples in the audioclip
         //
-        int sampleLength1 = (int)(sampleRate * sampleModifier[0]) * seconds[0];
-        int sampleLength2 = (int)(sampleRate * sampleModifier[1]) * seconds[1];
-        int sampleLength3 = (int)(sampleRate * sampleModifier[2]) * seconds[2];
-        int sampleLength = sampleLength1 + sampleLength2 + sampleLength3;
+        int SampleLength1 = (int)(SampleRate * SampleModifier[0]) * Seconds[0];
+        int SampleLength2 = (int)(SampleRate * SampleModifier[1]) * Seconds[1];
+        int SampleLength3 = (int)(SampleRate * SampleModifier[2]) * Seconds[2];
+        int SampleLength = SampleLength1 + SampleLength2 + SampleLength3;
 
         //This creates an audioclip that will be edited in this function
-        var audioClip = AudioClip.Create("tone", sampleLength, 1, sampleRate, false);
+        var audioClip = AudioClip.Create("tone", SampleLength, 1, SampleRate, false);
 
-        //Creates an array of float at the length of sampleLength
-        float[] samples = new float[sampleLength];
+        //Creates an array of float at the length of SampleLength
+        float[] Samples = new float[SampleLength];
         //For ever sample its assigning a sound
         
-        for (var i = 0; i < sampleLength; i++)
+        for (var i = 0; i < SampleLength; i++)
         {
             float s = 0;
-            if (i > sampleLength1)
+            if (i > SampleLength1)
             {
-                s = Mathf.Sin(2.0f * Mathf.PI * frequency[1] * ((float)i / (float)sampleRate));
+                s = Mathf.Sin(2.0f * Mathf.PI * Frequency[1] * ((float)i / (float)SampleRate));
             }
-            else if(i > sampleLength2)
+            else if(i > SampleLength2)
             {
-                s = Mathf.Sin(2.0f * Mathf.PI * frequency[2] * ((float)i / (float)sampleRate));
+                s = Mathf.Sin(2.0f * Mathf.PI * Frequency[2] * ((float)i / (float)SampleRate));
             }
 
             else
             {
-                s = Mathf.Sin(2.0f * Mathf.PI * frequency[0] * ((float)i / (float)sampleRate));
+                s = Mathf.Sin(2.0f * Mathf.PI * Frequency[0] * ((float)i / (float)SampleRate));
             }
 
-            float v = s * maxValue;
+            float v = s * MaxValue;
 
-            samples[i] = v;
+            Samples[i] = v;
         }
         //Assigning the audio to the audioclip
-        audioClip.SetData(samples, 0);
+        audioClip.SetData(Samples, 0);
         return audioClip;
     }
 
     //This outputs the sound
     public void PlayOutAudio(AudioClip sound)
     {
-        audioSource.PlayOneShot(sound);
+        @AudioSource.PlayOneShot(sound);
     }
     //When the Play button is pressed it runs the Coroutine
     public void PlaySoundBtn()
@@ -130,7 +146,7 @@ public class AudioTinker : MonoBehaviour
     public void SaveWavFile()
     {
         string path = EditorUtility.SaveFilePanel("Where do you want the wav file to go?", "", "", "wav");
-        SaveWavUtil.Save(path, outAudioClip);
+        SaveWavUtil.Save(path, OutAudioClip);
     }
 
     //This function is creating a list of audio clips and adding the audioClip to that list
@@ -139,14 +155,14 @@ public class AudioTinker : MonoBehaviour
         List<AudioClip> Clips = new List<AudioClip>();
         Clips.Add(audioClip);
     }
-    
+    //This Coroutine adds all of the variables into arrays to then be outputted
     IEnumerator DelaySound()
     {
         int[] Frequencies = new int[3] {Frequency1, Frequency2, Frequency3};
         int[] Seconds = new int[3] {Delay1, Delay2, Delay3};
-        float[] Modifier = new float[3] { Modifier1, Modifier2, Modifier3 };
-        outAudioClip = CreatePickupSound(Frequencies, Seconds, Modifier);
-        PlayOutAudio(outAudioClip);
+        float[] Modifier = new float[3] {Modifier1, Modifier2, Modifier3};
+        OutAudioClip = CreatePickupSound(Frequencies, Seconds, Modifier);
+        PlayOutAudio(OutAudioClip);
         yield return new WaitForSeconds(0);
     }
 }
