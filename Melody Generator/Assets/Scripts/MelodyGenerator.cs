@@ -18,21 +18,13 @@ public class MelodyGenerator : MonoBehaviour
     private double baseFrequency;
     private double mainFrequency;
 
+    private int chosenFrequencyB;
+    private int chosenFrequencyM;
+
     private double add;
 
+    private float gain;
     private float volume = 0.2f;
-
- 
-    
-
-    void Start()
-    {
-        Melody = GetComponent<AudioSource>();
-        
-        playAudio();
-        //SaveWavUtil.Save("C://Users//Ceri Thomas//Documents//Tinkering-Audio-Team-5//Melody Generator//soundFile.wav", outAudioClip);
-
-    }
 
 
     public void MakeMelody()
@@ -148,37 +140,37 @@ public class MelodyGenerator : MonoBehaviour
             1458.62, //A#8
         };
 
-        //make the base for the melody
-        //add two or more waves together
-        // var random = new System.Random();
-        // for (int i = 0; i < 109; i++)
-        // {
-        //    outAudioClip = CreateTone(random.Next(notesFrequency.Count));
-
-        // }
+    
+        Melody = GetComponent<AudioSource>();
 
         var counter = 0;
+        
         while (counter < sampleLength)
         {
-            frequency = 261.63f;
-            baseFrequency = Random.Range(0, 109);
-            mainFrequency = Random.Range(0, 109);
+            baseFrequency = notesFrequency[chosenFrequencyB];
+            mainFrequency = notesFrequency[chosenFrequencyM];
+
+            chosenFrequencyB += (Random.Range(0, notesFrequency.Count));
+            chosenFrequencyM += (Random.Range(0, notesFrequency.Count));
+
+            chosenFrequencyB %= notesFrequency.Count;
+            chosenFrequencyM %= notesFrequency.Count;
+
 
             counter++;
 
-            if (baseFrequency == mainFrequency)
+            if (chosenFrequencyB == chosenFrequencyM)
             {
-                baseFrequency = Random.Range(0, 109);
-                mainFrequency = Random.Range(0, 109);
+                chosenFrequencyB += (Random.Range(0, notesFrequency.Count));
+                chosenFrequencyM += (Random.Range(0, notesFrequency.Count));
             }
 
-            
-        }
+            playAudio();
+            Melody.clip = outAudioClip;
+            Melody.Play();
+            saveAsWav();
 
-        playAudio();
-        Melody.clip = outAudioClip;
-        Melody.Play();
-        saveAsWav();
+        }
 
 
 
@@ -186,6 +178,7 @@ public class MelodyGenerator : MonoBehaviour
 
     public void OnAudioFilterRead(float[] data, int channels)
     {
+        volume = gain;
         frequency = baseFrequency * 2.0 * Mathf.PI / mainFrequency;
 
         for (int i = 0; i < data.Length; i = i + channels)
@@ -206,7 +199,7 @@ public class MelodyGenerator : MonoBehaviour
 
     public void playAudio()
     {
-        outAudioClip = AudioClip.Create("tone", (int)(frequency * sampleLength), 2, (int)frequency, false);
+        outAudioClip = AudioClip.Create("tone", (int)(baseFrequency * sampleLength), 2, (int)baseFrequency, false);
     }
 
     public void saveAsWav()
